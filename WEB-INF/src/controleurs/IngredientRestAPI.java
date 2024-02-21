@@ -15,7 +15,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet("/ingredients/*")
+@WebServlet(value = "/ingredients/*", method = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE})
 public class IngredientRestAPI extends HttpServlet {
     IngredientDAODatabase dao = new IngredientDAODatabase();
 
@@ -76,4 +76,25 @@ public class IngredientRestAPI extends HttpServlet {
         return;
     }
 
+    public void doDelete(HttpServletRequest req, HttpServletResponse res)
+        throws ServletException, IOException {
+        res.setContentType("application/json;charset=UTF-8");
+        PrintWriter out = res.getWriter();
+        String info = req.getPathInfo();
+        if (info == null || info.equals("/")) {
+            res.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+        String[] splits = info.split("/");
+        if (splits.length != 2) {
+            res.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+        int id = Integer.parseInt(splits[1]);
+        if (dao.delete(id)) {
+            res.setStatus(HttpServletResponse.SC_NO_CONTENT);
+        } else {
+            res.sendError(HttpServletResponse.SC_NOT_FOUND);
+        }
+    }
 }
