@@ -83,17 +83,18 @@ public class IngredientDAODatabase implements DAOIngredient {
         return false;
     }
 
-    public void delete(int id) {
-        try (Connection conn = dataSource.getConnection()) {
-            PreparedStatement stmt = conn.prepareStatement("DELETE FROM ingredients WHERE id = ?");
+    public boolean delete(int id) {
+        try (Connection con = DriverManager.getConnection(url, nom, mdp)) {
+            PreparedStatement stmt = con.prepareStatement("DELETE FROM ingredients WHERE id = ?");
             stmt.setInt(1, id);
             int rowsDeleted = stmt.executeUpdate();
-            return rowsDeleted == 1;
+            return rowsDeleted==1;
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }catch(Exception e){
             System.out.println(e.getMessage());
         }
+        return false;
     }
     
 }

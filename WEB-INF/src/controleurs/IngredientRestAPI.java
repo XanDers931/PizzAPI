@@ -15,7 +15,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet(value = "/ingredients/*", method = {RequestMethod.GET, RequestMethod.POST, RequestMethod.DELETE})
+@WebServlet("/ingredients/*")
 public class IngredientRestAPI extends HttpServlet {
     IngredientDAODatabase dao = new IngredientDAODatabase();
 
@@ -77,7 +77,7 @@ public class IngredientRestAPI extends HttpServlet {
     }
 
     public void doDelete(HttpServletRequest req, HttpServletResponse res)
-        throws ServletException, IOException {
+        throws ServletException, IOException, java.io.IOException {
         res.setContentType("application/json;charset=UTF-8");
         PrintWriter out = res.getWriter();
         String info = req.getPathInfo();
