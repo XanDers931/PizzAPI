@@ -1,0 +1,19 @@
+meta {
+  name: CreateIngredients
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:8080/sae_rest_groupeh_milleville_martel/ingredients
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "id":3,
+    "name":"sauce",
+    "prix":12
+  }
+}

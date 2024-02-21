@@ -32,7 +32,7 @@ public class IngredientRestAPI extends HttpServlet {
             return;
         }
         String[] splits = info.split("/");
-        if (splits.length != 2) {
+        if (splits.length > 3) {
             res.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
@@ -42,8 +42,16 @@ public class IngredientRestAPI extends HttpServlet {
             res.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
         }
+        if(splits.length==3){
+            if(splits[2].equals("name")){
+                String jsonstring = objectMapper.writeValueAsString(e.getName());
+                out.print(jsonstring);
+                return;
+            }
+        }
         out.print(objectMapper.writeValueAsString(e));
         return;
+        
     }
 
     public void doPost(HttpServletRequest req, HttpServletResponse res)
