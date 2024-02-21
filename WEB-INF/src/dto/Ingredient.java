@@ -3,7 +3,7 @@ package dto;
 /**
  * Ingredients
  */
-public class Ingredients {
+public class Ingredient {
 
     int id, prix;
     String name;
@@ -27,4 +27,13 @@ public class Ingredients {
     public void setName(String name) {
         this.name = name;
     }
+    
+    public Ingredient createIngredient(int id, String name, int prix) {
+        Ingredient ingredient = new Ingredient();
+        ingredient.setId(id);
+        ingredient.setName(name);
+        ingredient.setPrix(prix);
+        return ingredient;
+    }
+
 }
