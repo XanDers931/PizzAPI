@@ -1,0 +1,17 @@
+meta {
+  name: patch_pizza
+  type: http
+  seq: 5
+}
+
+patch {
+  url: http://localhost:8080/sae_rest_groupeh_milleville_martel/pizzas/6
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "prix" : 3
+  }
+}

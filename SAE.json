@@ -1,0 +1,160 @@
+{
+  "name": "SAE",
+  "version": "1",
+  "items": [
+    {
+      "type": "http",
+      "name": "CreateIngredients",
+      "seq": 1,
+      "request": {
+        "url": "http://localhost:8080/sae_rest_groupeh_milleville_martel/ingredients",
+        "method": "POST",
+        "headers": [],
+        "body": {
+          "mode": "json",
+          "json": "{\n  \"id\":3,\n  \"name\":\"sauce\",\n  \"prix\":12\n}",
+          "formUrlEncoded": [],
+          "multipartForm": []
+        },
+        "auth": {
+          "mode": "none",
+          "basic": {
+            "username": "",
+            "password": ""
+          },
+          "bearer": {
+            "token": ""
+          }
+        },
+        "script": {},
+        "vars": {},
+        "assertions": [],
+        "tests": "",
+        "query": []
+      }
+    },
+    {
+      "type": "http",
+      "name": "DeleteIngredients",
+      "seq": 2,
+      "request": {
+        "url": "http://localhost:8080/sae_rest_groupeh_milleville_martel/ingredients/3",
+        "method": "DELETE",
+        "headers": [],
+        "body": {
+          "mode": "none",
+          "formUrlEncoded": [],
+          "multipartForm": []
+        },
+        "auth": {
+          "mode": "none",
+          "basic": {
+            "username": "",
+            "password": ""
+          },
+          "bearer": {
+            "token": ""
+          }
+        },
+        "script": {},
+        "vars": {},
+        "assertions": [],
+        "tests": "",
+        "query": []
+      }
+    },
+    {
+      "type": "http",
+      "name": "Create PIZZA",
+      "seq": 3,
+      "request": {
+        "url": "http://localhost:8080/sae_rest_groupeh_milleville_martel/pizzas",
+        "method": "POST",
+        "headers": [],
+        "body": {
+          "mode": "json",
+          "json": "{\"nom\":\"3 fromages\",\n \"pate\":\"Fine\",\n \"id\":6,\n \"prixBase\":10,\n \"ingredients\":[{\"id\":9,\"prix\":4,\"name\":\"Chèvre\"},\n                {\"id\":2,\"prix\":3,\"name\":\"Mozzarella\"},\n                {\"id\":13,\"prix\":3,\"name\":\"Ricotta\"}]}",
+          "formUrlEncoded": [],
+          "multipartForm": []
+        },
+        "auth": {
+          "mode": "none",
+          "basic": {
+            "username": "",
+            "password": ""
+          },
+          "bearer": {
+            "token": ""
+          }
+        },
+        "script": {},
+        "vars": {},
+        "assertions": [],
+        "tests": "",
+        "query": []
+      }
+    },
+    {
+      "type": "http",
+      "name": "DELETE PIZZA",
+      "seq": 4,
+      "request": {
+        "url": "http://localhost:8080/sae_rest_groupeh_milleville_martel/pizzas/6",
+        "method": "DELETE",
+        "headers": [],
+        "body": {
+          "mode": "none",
+          "formUrlEncoded": [],
+          "multipartForm": []
+        },
+        "auth": {
+          "mode": "none",
+          "basic": {
+            "username": "",
+            "password": ""
+          },
+          "bearer": {
+            "token": ""
+          }
+        },
+        "script": {},
+        "vars": {},
+        "assertions": [],
+        "tests": "",
+        "query": []
+      }
+    },
+    {
+      "type": "http",
+      "name": "patch_pizza",
+      "seq": 5,
+      "request": {
+        "url": "http://localhost:8080/sae_rest_groupeh_milleville_martel/pizzas/6",
+        "method": "PATCH",
+        "headers": [],
+        "body": {
+          "mode": "json",
+          "json": "{\n  \"prix\" : 3\n}",
+          "formUrlEncoded": [],
+          "multipartForm": []
+        },
+        "auth": {
+          "mode": "none",
+          "basic": {
+            "username": "",
+            "password": ""
+          },
+          "bearer": {
+            "token": ""
+          }
+        },
+        "script": {},
+        "vars": {},
+        "assertions": [],
+        "tests": "",
+        "query": []
+      }
+    }
+  ],
+  "environments": []
+}

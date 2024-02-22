@@ -4,11 +4,12 @@ import java.util.ArrayList;
 
 public class Pizza {
     private String nom,pate;
-    private int prixBase;
+    private int id,prixBase;
     private ArrayList<Ingredient> ingredients;
 
-    public Pizza createPizza(String nom, String pate, int prixBase, ArrayList<Ingredient> ingredients) {
+    public Pizza createPizza(int id, String nom, String pate, int prixBase, ArrayList<Ingredient> ingredients) {
         Pizza pizza = new Pizza();
+        pizza.setId(id);
         pizza.setNom(nom);
         pizza.setPate(pate);
         pizza.setPrixBase(prixBase);
@@ -16,6 +17,13 @@ public class Pizza {
         return pizza;
     }
 
+    
+    public int getId() {
+        return id;
+    }
+    public void setId(int id) {
+        this.id = id;
+    }
     public String getNom() {
         return nom;
     }
@@ -39,7 +47,5 @@ public class Pizza {
     }
     public void setIngredients(ArrayList<Ingredient> ingredients) {
         this.ingredients = ingredients;
-    }
-    
-    
+    }    
 }

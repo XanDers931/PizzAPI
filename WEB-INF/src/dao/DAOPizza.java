@@ -10,5 +10,5 @@ public interface DAOPizza {
 
     public Pizza findById(int id);
 
-    public boolean save(String nom, String pate, int prixBase, ArrayList<Ingredient> ingredients);
+    public boolean save(int id, String name, String pate, int prixBase, ArrayList<Ingredient> ingredients);
 }

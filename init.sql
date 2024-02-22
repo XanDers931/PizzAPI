@@ -71,8 +71,3 @@ INSERT INTO pizza_ingredient (pizza_id, ingredient_id) VALUES (4, 6); -- Poivron
 INSERT INTO pizza (id, nom, pate, prixBase) VALUES (5, 'Poire et Gorgonzola', 'Fine', 12);
 INSERT INTO pizza_ingredient (pizza_id, ingredient_id) VALUES (5, 15); -- Poire
 INSERT INTO pizza_ingredient (pizza_id, ingredient_id) VALUES (5, 14); -- Gorgonzola
-
-SELECT ingredients.name 
-FROM ingredients,pizza_ingredient 
-WHERE ingredients.id=pizza_ingredient.ingredient_id 
-AND pizza_ingredient.pizza_id = ?;

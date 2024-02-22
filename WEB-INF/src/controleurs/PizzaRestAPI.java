@@ -7,6 +7,7 @@ import java.util.Collection;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dao.PizzaDAODatabase;
+import dto.Ingredient;
 import dto.Pizza;
 import io.jsonwebtoken.io.IOException;
 import jakarta.servlet.ServletException;
@@ -15,8 +16,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet("/pizza/*")
-public class PizzaRestAPI extends HttpServlet {
+@WebServlet("/pizzas/*")
+public class PizzaRestAPI extends doPatch {
     PizzaDAODatabase dao = new PizzaDAODatabase();
 
     public void doGet(HttpServletRequest req, HttpServletResponse res)
@@ -44,7 +45,7 @@ public class PizzaRestAPI extends HttpServlet {
         }
         if(splits.length==3){
             if(splits[2].equals("name")){
-                String jsonstring = objectMapper.writeValueAsString(e.getName());
+                String jsonstring = objectMapper.writeValueAsString(e.getNom());
                 out.print(jsonstring);
                 return;
             }
@@ -67,8 +68,8 @@ public class PizzaRestAPI extends HttpServlet {
             while ((line = reader.readLine()) != null) {
                 buffer.append(line);
             }
-            Ingredient ingredient = objectMapper.readValue(buffer.toString(), Ingredient.class);
-            dao.save(ingredient.getId(), ingredient.getName(), ingredient.getPrix());
+            Pizza pizza = objectMapper.readValue(buffer.toString(), Pizza.class);
+            dao.save(pizza.getId(), pizza.getNom(),pizza.getPate(), pizza.getPrixBase(), pizza.getIngredients());
             out.print(buffer.toString());
             return;
         }
@@ -97,4 +98,38 @@ public class PizzaRestAPI extends HttpServlet {
             res.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
     }
+
+    @Override
+    public void doPatch(HttpServletRequest req, HttpServletResponse res) throws ServletException, java.io.IOException {
+        res.setContentType("application/json;charset=UTF-8");
+        PrintWriter out = res.getWriter();
+        ObjectMapper objectMapper = new ObjectMapper();
+        StringBuilder buffer = new StringBuilder();
+        BufferedReader reader = req.getReader();
+        String info = req.getPathInfo();
+        if (info == null || info.equals("/")) {
+            res.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+        String[] splits = info.split("/");
+        if (splits.length != 2) {
+            res.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+        int id = Integer.parseInt(splits[1]);
+        if (info == null || info.equals("/")) {
+            String line = "";
+            while ((line = reader.readLine()) != null) {
+                buffer.append(line);
+            }
+            int prix = objectMapper.readValue(buffer.toString(), Integer.class);
+            System.out.println(prix);
+            dao.patch(id, prix);
+            out.print(buffer.toString());
+            return;
+        }
+
+        return;
+    }
+    
 }
