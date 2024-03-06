@@ -167,10 +167,24 @@ public class PizzaDAODatabase implements DAOPizza {
             return rowsDeleted==1;
         } catch (SQLException e) {
             System.out.println(e.getMessage());
-        }catch(Exception e){
-            System.out.println(e.getMessage());
         }
         return false;
     }
 
+    public boolean addIngredient(int id_pizza, int id_ingredient) {
+        String query = "Insert into pizza_ingredient (pizza_id, ingredient_id) VALUES (?, ?) ; ";
+        try (Connection con = DriverManager.getConnection(url, nom, mdp)) {
+            try (PreparedStatement ps = con.prepareStatement(query)) {
+                ps.setInt(1, id_pizza);
+                ps.setInt(2, id_ingredient);
+                ps.executeUpdate();
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return false;
+    }
 }

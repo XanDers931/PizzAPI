@@ -3,6 +3,7 @@ package controleurs;
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.Collection;
+import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -73,7 +74,13 @@ public class PizzaRestAPI extends doPatch {
             out.print(buffer.toString());
             return;
         }
-
+        String[] splits = info.split("/");
+        if (splits.length != 2) {
+            res.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+        int id_pizza = Integer.parseInt(splits[1]);
+        
         return;
     }
 
@@ -101,6 +108,7 @@ public class PizzaRestAPI extends doPatch {
 
     @Override
     public void doPatch(HttpServletRequest req, HttpServletResponse res) throws ServletException, java.io.IOException {
+        System.out.println("TESTTTTTTTTTTTT");
         res.setContentType("application/json;charset=UTF-8");
         PrintWriter out = res.getWriter();
         ObjectMapper objectMapper = new ObjectMapper();
@@ -117,17 +125,26 @@ public class PizzaRestAPI extends doPatch {
             return;
         }
         int id = Integer.parseInt(splits[1]);
-        if (info == null || info.equals("/")) {
-            String line = "";
-            while ((line = reader.readLine()) != null) {
-                buffer.append(line);
-            }
-            int prix = objectMapper.readValue(buffer.toString(), Integer.class);
-            System.out.println(prix);
-            dao.patch(id, prix);
-            out.print(buffer.toString());
-            return;
+        String line;
+        while ((line = reader.readLine()) != null) {
+            buffer.append(line);
         }
+
+        if (dao.findById(id).getId() == 0) {
+            res.sendError(HttpServletResponse.SC_NOT_FOUND);
+        }
+
+        String payload = buffer.toString();
+
+        Map<String, String> jsonData = objectMapper.readValue(payload, Map.class);
+
+        String prixString = jsonData.get("prix");
+
+        int prix = Integer.parseInt(prixString);
+
+        dao.patch(prix, id);
+
+        out.print(objectMapper.writeValueAsString(dao.findById(id)));
 
         return;
     }
