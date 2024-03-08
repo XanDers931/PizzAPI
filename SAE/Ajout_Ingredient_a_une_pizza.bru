@@ -1,0 +1,19 @@
+meta {
+  name: Ajout Ingredient à une pizza
+  type: http
+  seq: 7
+}
+
+post {
+  url: http://localhost:8080/sae_rest_groupeh_milleville_martel/pizzas/1
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "id":3,
+    "name":"sauce",
+    "prix":12
+  }
+}

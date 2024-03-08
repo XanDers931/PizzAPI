@@ -13,12 +13,11 @@ import dto.Pizza;
 import io.jsonwebtoken.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @WebServlet("/pizzas/*")
-public class PizzaRestAPI extends doPatch {
+public class PizzaRestAPI extends DoPatch {
     PizzaDAODatabase dao = new PizzaDAODatabase();
 
     public void doGet(HttpServletRequest req, HttpServletResponse res)
@@ -34,7 +33,7 @@ public class PizzaRestAPI extends doPatch {
             return;
         }
         String[] splits = info.split("/");
-        if (splits.length > 3) {
+        if (splits.length > 4) {
             res.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
@@ -45,8 +44,8 @@ public class PizzaRestAPI extends doPatch {
             return;
         }
         if(splits.length==3){
-            if(splits[2].equals("name")){
-                String jsonstring = objectMapper.writeValueAsString(e.getNom());
+            if(splits[2].equals("prixfinal")){
+                String jsonstring = objectMapper.writeValueAsString(e.getPrixFinal(id));
                 out.print(jsonstring);
                 return;
             }
@@ -79,36 +78,48 @@ public class PizzaRestAPI extends doPatch {
             res.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
-        int id_pizza = Integer.parseInt(splits[1]);
-        
+        else{
+            String line = "";
+            while ((line = reader.readLine()) != null) {
+                buffer.append(line);
+            }
+            int id_pizza = Integer.parseInt(splits[1]);
+            Ingredient ingredient = objectMapper.readValue(buffer.toString(), Ingredient.class);
+            dao.addIngredient(id_pizza, ingredient.getId());
+            out.print(buffer.toString());
+        }
         return;
     }
 
     public void doDelete(HttpServletRequest req, HttpServletResponse res)
         throws ServletException, IOException, java.io.IOException {
         res.setContentType("application/json;charset=UTF-8");
-        PrintWriter out = res.getWriter();
         String info = req.getPathInfo();
         if (info == null || info.equals("/")) {
             res.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
         String[] splits = info.split("/");
-        if (splits.length != 2) {
+        if (splits.length != 2 && splits.length != 3) {
             res.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
-        int id = Integer.parseInt(splits[1]);
-        if (dao.delete(id)) {
-            res.setStatus(HttpServletResponse.SC_NO_CONTENT);
-        } else {
-            res.sendError(HttpServletResponse.SC_NOT_FOUND);
+        int id_pizza = Integer.parseInt(splits[1]);
+        if (splits.length == 2){
+            if (dao.delete(id_pizza)) {
+                res.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            } else {
+                res.sendError(HttpServletResponse.SC_NOT_FOUND);
+            }
+        }
+        else if (splits.length ==3){
+            int id_ingredient = Integer.parseInt(splits[2]);
+            dao.deleteIngredient(id_pizza, id_ingredient);
         }
     }
 
     @Override
     public void doPatch(HttpServletRequest req, HttpServletResponse res) throws ServletException, java.io.IOException {
-        System.out.println("TESTTTTTTTTTTTT");
         res.setContentType("application/json;charset=UTF-8");
         PrintWriter out = res.getWriter();
         ObjectMapper objectMapper = new ObjectMapper();
@@ -136,17 +147,17 @@ public class PizzaRestAPI extends doPatch {
 
         String payload = buffer.toString();
 
+        @SuppressWarnings("unchecked")
         Map<String, String> jsonData = objectMapper.readValue(payload, Map.class);
 
         String prixString = jsonData.get("prix");
 
         int prix = Integer.parseInt(prixString);
 
-        dao.patch(prix, id);
+        dao.patch(id, prix);
 
         out.print(objectMapper.writeValueAsString(dao.findById(id)));
 
         return;
-    }
-    
+    }    
 }

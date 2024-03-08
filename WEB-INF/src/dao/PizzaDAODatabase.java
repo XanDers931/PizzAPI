@@ -41,7 +41,6 @@ public class PizzaDAODatabase implements DAOPizza {
 
                 try (PreparedStatement ps = con.prepareStatement(queryIngredients)) {
                     ps.setInt(1, index);
-                    System.out.println(ps);
                     ResultSet rs2 = ps.executeQuery();
                     while (rs2.next()) {
                         tmpIngredient = new Ingredient();
@@ -83,7 +82,6 @@ public class PizzaDAODatabase implements DAOPizza {
                     
                     try (PreparedStatement ps1 = con.prepareStatement(queryIngredients)) {
                         ps1.setInt(1, pizza.getId());
-                        System.out.println(ps1);
                         ResultSet rs2 = ps1.executeQuery();
                         while (rs2.next()) {
                             tmpIngredient = new Ingredient();
@@ -159,10 +157,9 @@ public class PizzaDAODatabase implements DAOPizza {
 
     public boolean patch(int id, int new_price) {
         try (Connection con = DriverManager.getConnection(url, nom, mdp)) {
-            PreparedStatement stmt = con.prepareStatement("update pizza set prixBase = ? WHERE id = ?");
-            System.out.println(stmt);
-            stmt.setInt(2, id);
+            PreparedStatement stmt = con.prepareStatement("update pizza set prixbase = ? where id = ?;");
             stmt.setInt(1, new_price);
+            stmt.setInt(2, id);
             int rowsDeleted = stmt.executeUpdate();
             return rowsDeleted==1;
         } catch (SQLException e) {
@@ -178,6 +175,24 @@ public class PizzaDAODatabase implements DAOPizza {
                 ps.setInt(1, id_pizza);
                 ps.setInt(2, id_ingredient);
                 ps.executeUpdate();
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return false;
+    }
+
+    public boolean deleteIngredient(int id_pizza, int id_ingredient) {
+        String query = "DELETE FROM pizza_ingredient WHERE pizza_id=? AND ingredient_id=? ; ";
+        try (Connection con = DriverManager.getConnection(url, nom, mdp)) {
+            try (PreparedStatement ps = con.prepareStatement(query)) {
+                ps.setInt(1, id_pizza);
+                ps.setInt(2, id_ingredient);
+                ps.executeUpdate();
+                return true;
             } catch (Exception e) {
                 e.printStackTrace();
                 return false;

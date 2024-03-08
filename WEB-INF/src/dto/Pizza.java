@@ -1,5 +1,9 @@
 package dto;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 
 public class Pizza {
@@ -32,6 +36,34 @@ public class Pizza {
     }
     public String getPate() {
         return pate;
+    }
+    public int getPrixFinal(int id_pizza){
+        String query = "SELECT prixbase FROM pizza WHERE id = ?;";
+        int cpt = 0;
+        try (Connection con = DriverManager.getConnection("jdbc:postgresql://psqlserv/but2", "alexandremarteletu", "moi")) {
+            try (PreparedStatement ps = con.prepareStatement(query)) {
+                ps.setInt(1, id_pizza);
+                ResultSet rs = ps.executeQuery();
+                if(rs.next()){
+                    cpt+=rs.getInt("prixbase");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            query = "SELECT prix FROM pizza_ingredient AS pi , ingredients AS i WHERE pi.ingredient_id=i.id AND pi.pizza_id=?;";
+            try (PreparedStatement ps = con.prepareStatement(query)) {
+                ps.setInt(1, id_pizza);
+                ResultSet rs = ps.executeQuery();
+                while(rs.next()){
+                    cpt+=rs.getInt("prix");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return cpt;
     }
     public void setPate(String pate) {
         this.pate = pate;

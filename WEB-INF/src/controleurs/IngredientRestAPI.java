@@ -79,7 +79,6 @@ public class IngredientRestAPI extends HttpServlet {
     public void doDelete(HttpServletRequest req, HttpServletResponse res)
         throws ServletException, IOException, java.io.IOException {
         res.setContentType("application/json;charset=UTF-8");
-        PrintWriter out = res.getWriter();
         String info = req.getPathInfo();
         if (info == null || info.equals("/")) {
             res.sendError(HttpServletResponse.SC_BAD_REQUEST);
