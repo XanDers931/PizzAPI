@@ -7,8 +7,7 @@ import java.util.Collection;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dao.CommandeDAODatabase;
-import dao.IngredientDAODatabase;
-import dto.Ingredient;
+import dto.Commande;
 import io.jsonwebtoken.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -27,7 +26,7 @@ public class CommandeRestAPI extends HttpServlet {
         ObjectMapper objectMapper = new ObjectMapper();
         String info = req.getPathInfo();
         if (info == null || info.equals("/")) {
-            Collection<Ingredient> l = dao.findAll();
+            Collection<Commande> l = dao.findAll();
             String jsonstring = objectMapper.writeValueAsString(l);
             out.print(jsonstring);
             return;
@@ -38,7 +37,7 @@ public class CommandeRestAPI extends HttpServlet {
             return;
         }
         int id = Integer.parseInt(splits[1]);
-        Ingredient e = dao.findById(id);
+        Commande e = dao.findById(id);
         if (e == null) {
             res.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
@@ -68,8 +67,8 @@ public class CommandeRestAPI extends HttpServlet {
             while ((line = reader.readLine()) != null) {
                 buffer.append(line);
             }
-            Ingredient ingredient = objectMapper.readValue(buffer.toString(), Ingredient.class);
-            dao.save(ingredient.getId(), ingredient.getName(), ingredient.getPrix());
+            Commande commande = objectMapper.readValue(buffer.toString(), Commande.class);
+            dao.save(commande.getId(), commande.getName(), commande.getDate(), commande.getCommandes());
             out.print(buffer.toString());
             return;
         }

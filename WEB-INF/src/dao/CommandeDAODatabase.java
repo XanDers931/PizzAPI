@@ -9,7 +9,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 import dto.Commande;
-import dto.Ingredient;
 import dto.Pizza;
 
 public class CommandeDAODatabase implements DAOCommande{
@@ -25,11 +24,13 @@ public class CommandeDAODatabase implements DAOCommande{
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             ArrayList<Commande> commandes = new ArrayList<>();
+            PizzaDAODatabase pizzaDao = new PizzaDAODatabase();
             while ((rs.next())) {
                 Commande cmd = new Commande();
                 cmd.setId(rs.getInt("id"));
-                cmd.setName(rs.getString("name"));
-                cmd.setDate(rs.getDate("date"));
+                cmd.setName(rs.getString("nom"));
+                cmd.setDate(rs.getDate("dates"));
+                cmd.setCommandes(pizzaDao.findAll());
                 commandes.add(cmd);
             }
             return commandes;
@@ -50,6 +51,12 @@ public class CommandeDAODatabase implements DAOCommande{
     public boolean save(int id, String name, Date date, ArrayList<Pizza> commande) {
         // TODO Auto-generated method stub
         return false;
+    }
+
+    @Override
+    public boolean delete(int id) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'delete'");
     }
     
 }
