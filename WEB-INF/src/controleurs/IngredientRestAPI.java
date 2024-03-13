@@ -3,6 +3,7 @@ package controleurs;
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.Collection;
+import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -11,12 +12,11 @@ import dto.Ingredient;
 import io.jsonwebtoken.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @WebServlet("/ingredients/*")
-public class IngredientRestAPI extends HttpServlet {
+public class IngredientRestAPI extends DoPatch {
     IngredientDAODatabase dao = new IngredientDAODatabase();
 
     public void doGet(HttpServletRequest req, HttpServletResponse res)
@@ -72,7 +72,6 @@ public class IngredientRestAPI extends HttpServlet {
             out.print(buffer.toString());
             return;
         }
-
         return;
     }
 
@@ -96,4 +95,55 @@ public class IngredientRestAPI extends HttpServlet {
             res.sendError(HttpServletResponse.SC_NOT_FOUND);
         }
     }
+
+    @Override
+    public void doPatch(HttpServletRequest req, HttpServletResponse res) throws ServletException, java.io.IOException {
+        res.setContentType("application/json;charset=UTF-8");
+        PrintWriter out = res.getWriter();
+        ObjectMapper objectMapper = new ObjectMapper();
+        StringBuilder buffer = new StringBuilder();
+        BufferedReader reader = req.getReader();
+        String info = req.getPathInfo();
+        if (info == null || info.equals("/")) {
+            res.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+        String[] splits = info.split("/");
+        if (splits.length != 2) {
+            System.out.println("TEST2");
+            res.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+        int id = Integer.parseInt(splits[1]);
+        String line;
+        while ((line = reader.readLine()) != null) {
+            buffer.append(line);
+        }
+
+        if (dao.findById(id).getId() == 0) {
+            res.sendError(HttpServletResponse.SC_NOT_FOUND);
+        }
+
+        if(splits.length ==2){
+            String payload = buffer.toString();
+
+            @SuppressWarnings("unchecked")
+            Map<String, String> jsonData = objectMapper.readValue(payload, Map.class);
+            String prixString = jsonData.get("prix");
+            int prix;
+            if(prixString==null) {
+                prix = -1;
+            }
+            else {
+                prix = Integer.parseInt(prixString);
+            }
+            String name = jsonData.get("name");
+            dao.patch(id, prix, name);
+            out.print(objectMapper.writeValueAsString(dao.findById(id)));
+            return;
+            
+        }
+        return;
+    }    
+
 }

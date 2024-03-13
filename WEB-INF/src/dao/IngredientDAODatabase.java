@@ -96,5 +96,32 @@ public class IngredientDAODatabase implements DAOIngredient {
         }
         return false;
     }
-    
+
+    public boolean patch(int id, int new_prix, String new_name) {
+        try (Connection con = DriverManager.getConnection(url, nom, mdp)) {
+            PreparedStatement stmt;
+            if(new_name == null && new_prix == -1)return false;
+            if(new_name != null && new_prix != -1){
+                stmt = con.prepareStatement("update ingredients set prix = ?, name = ? where id = ?;");
+                stmt.setInt(1,new_prix);
+                stmt.setString(2, new_name);
+                stmt.setInt(3, id);
+            }
+            else if(new_name != null && new_prix==-1){
+                stmt = con.prepareStatement("update ingredients set name = ? where id = ?;");
+                stmt.setString(1, new_name);
+                stmt.setInt(2, id);
+            }
+            else{
+                stmt = con.prepareStatement("update ingredients set prix = ? where id = ?;");
+                stmt.setInt(1, new_prix);
+                stmt.setInt(2, id);
+            }
+            int rowsDeleted = stmt.executeUpdate();
+            return rowsDeleted==1 || rowsDeleted==2;
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return false;
+    }
 }
