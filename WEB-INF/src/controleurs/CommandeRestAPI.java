@@ -49,6 +49,11 @@ public class CommandeRestAPI extends HttpServlet {
                 out.print(jsonstring);
                 return;
             }
+            if(splits[2].equals("prixfinal")){
+                String jsonstring = objectMapper.writeValueAsString(dao.getPrixFinal(e));
+                out.print(jsonstring);
+                return;
+            }
         }
         out.print(objectMapper.writeValueAsString(e));
         return;

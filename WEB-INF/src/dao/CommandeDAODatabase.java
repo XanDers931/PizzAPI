@@ -104,5 +104,14 @@ public class CommandeDAODatabase implements DAOCommande{
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'delete'");
     }
+
+    public int getPrixFinal(Commande commande) {
+        int cpt = 0;
+        PizzaDAODatabase dao = new PizzaDAODatabase();
+        for (Pizza pizza : commande.getCommandes()) {
+            cpt+=dao.getPrixFinal(pizza.getId());
+        }
+        return cpt;
+    }
     
 }
