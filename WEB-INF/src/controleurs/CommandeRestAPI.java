@@ -9,6 +9,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dao.CommandeDAODatabase;
 import dto.Commande;
+import dto.Ingredient;
+import dto.Pizza;
 import io.jsonwebtoken.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -49,6 +51,11 @@ public class CommandeRestAPI extends HttpServlet {
                 out.print(jsonstring);
                 return;
             }
+            if(splits[2].equals("date")){
+                String jsonstring = objectMapper.writeValueAsString(e.getDate());
+                out.print(jsonstring);
+                return;
+            }
             if(splits[2].equals("prixfinal")){
                 String jsonstring = objectMapper.writeValueAsString(dao.getPrixFinal(e));
                 out.print(jsonstring);
@@ -79,7 +86,21 @@ public class CommandeRestAPI extends HttpServlet {
             out.print(buffer.toString());
             return;
         }
-
+        String[] splits = info.split("/");
+        if (splits.length != 2) {
+            res.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
+        else{
+            String line = "";
+            while ((line = reader.readLine()) != null) {
+                buffer.append(line);
+            }
+            int id_commande = Integer.parseInt(splits[1]);
+            Pizza pizza = objectMapper.readValue(buffer.toString(), Pizza.class);
+            dao.addPizza(id_commande, pizza.getId());
+            out.print(buffer.toString());
+        }
         return;
     }
 

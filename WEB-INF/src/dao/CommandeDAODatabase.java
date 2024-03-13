@@ -101,8 +101,17 @@ public class CommandeDAODatabase implements DAOCommande{
 
     @Override
     public boolean delete(int id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'delete'");
+        try (Connection con = DriverManager.getConnection(url, nom, mdp)) {
+            PreparedStatement stmt = con.prepareStatement("DELETE FROM commande WHERE id = ?");
+            stmt.setInt(1, id);
+            int rowsDeleted = stmt.executeUpdate();
+            return rowsDeleted==1;
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }catch(Exception e){
+            System.out.println(e.getMessage());
+        }
+        return false;
     }
 
     public int getPrixFinal(Commande commande) {
@@ -114,4 +123,21 @@ public class CommandeDAODatabase implements DAOCommande{
         return cpt;
     }
     
+    public boolean addPizza(int id_commande, int id_pizza) {
+        String query = "Insert into commande_pizza (commande_id, pizza_id) VALUES (?, ?) ; ";
+        try (Connection con = DriverManager.getConnection(url, nom, mdp)) {
+            try (PreparedStatement ps = con.prepareStatement(query)) {
+                ps.setInt(1, id_commande);
+                ps.setInt(2, id_pizza);
+                ps.executeUpdate();
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return false;
+    }
+
 }

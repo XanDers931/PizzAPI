@@ -1,0 +1,17 @@
+meta {
+  name: Ajout d'une pizza à COmmande
+  type: http
+  seq: 6
+}
+
+post {
+  url: http://localhost:8080/sae_rest_groupeh_milleville_martel/commande/2
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "id": "2"
+  }
+}
