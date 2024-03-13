@@ -1,7 +1,6 @@
 package dao;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -67,18 +66,21 @@ public class CommandeDAODatabase implements DAOCommande{
     }
 
     @Override
-    public boolean save(int id, String name, Date date, ArrayList<Pizza> commande) {
+    public boolean save(Commande commande) {
         String query = "Insert into commande (id, nom, dates) VALUES ( ?, ? , ?) ; ";
         String querycommande_pizza = " INSERT INTO commande_pizza (commande_id,pizza_id) VALUES ( ?, ?)";
         try (Connection con = DriverManager.getConnection(url, nom, mdp)) {
             try (PreparedStatement ps = con.prepareStatement(query)) {
-                ps.setInt(1, id);
-                ps.setString(2, name);
-                ps.setDate(3, date);
+                System.out.println(ps);
+                ps.setInt(1, commande.getId());
+                ps.setString(2, commande.getName());
+                ps.setDate(3, commande.getDate());
                 ps.executeUpdate();
                 try (PreparedStatement ps2 = con.prepareStatement(querycommande_pizza)) {
-                    for (Pizza pizza : commande) {
-                        ps2.setInt(1, id);
+                    for (Pizza pizza : commande.getCommandes()) {
+                        System.out.println(ps2);
+                        System.out.println(pizza.getId());
+                        ps2.setInt(1, commande.getId());
                         ps2.setInt(2, pizza.getId());
                         ps2.executeUpdate();
                     }

@@ -3,6 +3,7 @@ package controleurs;
 import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.util.Collection;
+import java.sql.Date;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -68,7 +69,8 @@ public class CommandeRestAPI extends HttpServlet {
                 buffer.append(line);
             }
             Commande commande = objectMapper.readValue(buffer.toString(), Commande.class);
-            dao.save(commande.getId(), commande.getName(), commande.getDate(), commande.getCommandes());
+            commande.setDate(new Date(System.currentTimeMillis()));
+            dao.save(commande);
             out.print(buffer.toString());
             return;
         }
