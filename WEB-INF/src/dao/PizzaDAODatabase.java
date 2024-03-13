@@ -19,43 +19,15 @@ public class PizzaDAODatabase implements DAOPizza {
 
     @Override
     public ArrayList<Pizza> findAll() {
-        String queryPizza = "SELECT id, nom, pate, prixBase FROM pizza;";
-        String queryIngredients = "SELECT id, name, prix FROM ingredients,pizza_ingredient WHERE ingredients.id=pizza_ingredient.ingredient_id AND pizza_ingredient.pizza_id = ? ;";
-        int index;
-        Ingredient tmpIngredient;
-        ArrayList<Ingredient>ingredients;
+        String query = "SELECT * FROM pizza;";
         try (Connection con = DriverManager.getConnection(url, nom, mdp)) {
             Statement stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery(queryPizza);
-            ArrayList<Pizza> pizza = new ArrayList<>();
-            
+            ResultSet rs = stmt.executeQuery(query);
+            ArrayList<Pizza> pizzas = new ArrayList<>();
             while ((rs.next())) {
-                Pizza tmp = new Pizza();
-                ingredients = new ArrayList<>();
-                tmp.setId(rs.getInt("id"));
-                tmp.setNom(rs.getString("nom"));
-                tmp.setPate(rs.getString("pate"));
-                tmp.setPrixBase(rs.getInt("prixbase"));
-                //Récupération des ingrédients de la pizza
-                index = tmp.getId();
-
-                try (PreparedStatement ps = con.prepareStatement(queryIngredients)) {
-                    ps.setInt(1, index);
-                    ResultSet rs2 = ps.executeQuery();
-                    while (rs2.next()) {
-                        tmpIngredient = new Ingredient();
-                        ingredients.add(tmpIngredient.createIngredient(rs2.getInt("id"), rs2.getString("name"), rs2.getInt("prix")));
-                    }
-                }
-                catch (Exception e) {
-                    System.out.println(e.getMessage());
-                    return null;
-                }
-                tmp.setIngredients(ingredients);
-                pizza.add(tmp);
+                pizzas.add(this.findById(rs.getInt("id")));
             }
-            return pizza;
-
+            return pizzas;
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             return null;
@@ -64,48 +36,34 @@ public class PizzaDAODatabase implements DAOPizza {
 
     @Override
     public Pizza findById(int id) {
-        String query = "SELECT * FROM pizza WHERE id = ? ;";
-        String queryIngredients = "SELECT id, name, prix FROM ingredients,pizza_ingredient WHERE ingredients.id=pizza_ingredient.ingredient_id AND pizza_ingredient.pizza_id = ? ;";
-        Ingredient tmpIngredient;
-        ArrayList<Ingredient>ingredients;
         try (Connection con = DriverManager.getConnection(url, nom, mdp)) {
-            try (PreparedStatement ps = con.prepareStatement(query)) {
-                ps.setInt(1, id);
-                ResultSet rs = ps.executeQuery();
-                if (rs.next()) {
-                    Pizza pizza = new Pizza();
-                    ingredients = new ArrayList<>();
-                    pizza.setId(rs.getInt("id"));
-                    pizza.setNom(rs.getString("nom"));
-                    pizza.setPate(rs.getString("pate"));
-                    pizza.setPrixBase(rs.getInt("prixbase"));
-                    
-                    try (PreparedStatement ps1 = con.prepareStatement(queryIngredients)) {
-                        ps1.setInt(1, pizza.getId());
-                        ResultSet rs2 = ps1.executeQuery();
-                        while (rs2.next()) {
-                            tmpIngredient = new Ingredient();
-                            ingredients.add(tmpIngredient.createIngredient(rs2.getInt("id"), rs2.getString("name"), rs2.getInt("prix")));
-                        }
-                        pizza.setIngredients(ingredients);
-                    }
-                    catch (Exception e) {
-                        System.out.println(e.getMessage());
-                        return null;
-                    }
-                    
-                    return pizza;
-                }
-                
-                return null;
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-                return null;
+            Pizza pizza = new Pizza();
+
+            PreparedStatement stmt =  con.prepareStatement("SELECT * FROM pizza WHERE id = ?;");
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            rs.next();
+            pizza.setId(rs.getInt("id"));
+            pizza.setNom(rs.getString("nom"));
+            pizza.setPrixBase(rs.getInt("prixbase"));
+            pizza.setPate(rs.getString("pate"));
+
+            IngredientDAODatabase ingredientDAO = new IngredientDAODatabase();
+            PreparedStatement ps = con.prepareStatement("SELECT * FROM pizza_ingredient, ingredients WHERE pizza_id = ? AND id = pizza_id");
+            ps.setInt(1, id);
+            ResultSet rsIngredient = ps.executeQuery();
+            ArrayList<Ingredient> ingredientPizza = new ArrayList<>();
+            while (rsIngredient.next()) {
+                ingredientPizza.add(ingredientDAO.findById(rsIngredient.getInt("ingredient_id")));
             }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
+            pizza.setIngredients(ingredientPizza);
+            return pizza;
         }
-        return null;
+        catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+
     }
     
     @Override
@@ -201,5 +159,34 @@ public class PizzaDAODatabase implements DAOPizza {
             System.out.println(e.getMessage());
         }
         return false;
+    }
+
+    public int getPrixFinal(int id_pizza){
+        String query = "SELECT prixbase FROM pizza WHERE id = ?;";
+        int cpt = 0;
+        try (Connection con = DriverManager.getConnection("jdbc:postgresql://psqlserv/but2", "alexandremarteletu", "moi")) {
+            try (PreparedStatement ps = con.prepareStatement(query)) {
+                ps.setInt(1, id_pizza);
+                ResultSet rs = ps.executeQuery();
+                if(rs.next()){
+                    cpt+=rs.getInt("prixbase");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            query = "SELECT prix FROM pizza_ingredient AS pi , ingredients AS i WHERE pi.ingredient_id=i.id AND pi.pizza_id=?;";
+            try (PreparedStatement ps = con.prepareStatement(query)) {
+                ps.setInt(1, id_pizza);
+                ResultSet rs = ps.executeQuery();
+                while(rs.next()){
+                    cpt+=rs.getInt("prix");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return cpt;
     }
 }

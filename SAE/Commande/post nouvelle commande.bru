@@ -1,0 +1,28 @@
+meta {
+  name: post nouvelle commande
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:8080/sae_rest_groupeh_milleville_martel/commande
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "nom": "Cannibale",
+    "pate": "Epaisse",
+    "id": 6,
+    "prixBase": 12,
+    "pizzas": [
+      {
+        "id": 1
+      },
+      {
+        "id": 1
+      }
+    ]
+  }
+}

@@ -1,17 +1,11 @@
 meta {
-  name: patch_pizza
+  name: GET pizza By id
   type: http
-  seq: 5
+  seq: 7
 }
 
-patch {
+get {
   url: http://localhost:8080/sae_rest_groupeh_milleville_martel/pizzas/1
-  body: json
+  body: none
   auth: none
-}
-
-body:json {
-  {
-    "prix" : 3
-  }
 }

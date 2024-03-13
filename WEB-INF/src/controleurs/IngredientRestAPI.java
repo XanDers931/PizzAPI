@@ -48,6 +48,11 @@ public class IngredientRestAPI extends DoPatch {
                 out.print(jsonstring);
                 return;
             }
+            if(splits[2].equals("prix")){
+                String jsonstring = objectMapper.writeValueAsString(e.getPrix());
+                out.print(jsonstring);
+                return;
+            }
         }
         out.print(objectMapper.writeValueAsString(e));
         return;
@@ -110,7 +115,6 @@ public class IngredientRestAPI extends DoPatch {
         }
         String[] splits = info.split("/");
         if (splits.length != 2) {
-            System.out.println("TEST2");
             res.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }

@@ -3,6 +3,7 @@ package dao;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -20,21 +21,14 @@ public class CommandeDAODatabase implements DAOCommande{
     @Override
     public ArrayList<Commande> findAll() {
         String query = "SELECT * FROM commande;";
-         try (Connection con = DriverManager.getConnection(url, nom, mdp)) {
+        try (Connection con = DriverManager.getConnection(url, nom, mdp)) {
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             ArrayList<Commande> commandes = new ArrayList<>();
-            PizzaDAODatabase pizzaDao = new PizzaDAODatabase();
             while ((rs.next())) {
-                Commande cmd = new Commande();
-                cmd.setId(rs.getInt("id"));
-                cmd.setName(rs.getString("nom"));
-                cmd.setDate(rs.getDate("dates"));
-                cmd.setCommandes(pizzaDao.findAll());
-                commandes.add(cmd);
+                commandes.add(this.findById(rs.getInt("id")));
             }
             return commandes;
-
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             return null;
@@ -43,13 +37,63 @@ public class CommandeDAODatabase implements DAOCommande{
 
     @Override
     public Commande findById(int id) {
-        // TODO Auto-generated method stub
-        return null;
+        try (Connection con = DriverManager.getConnection(url, nom, mdp)) {
+            Commande commande = new Commande();
+
+            PreparedStatement stmt =  con.prepareStatement("SELECT * FROM commande WHERE id = ?;");
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            rs.next();
+            commande.setId(rs.getInt("id"));
+            commande.setName(rs.getString("nom"));
+            commande.setDate(rs.getDate("dates"));
+
+            PizzaDAODatabase pizzaDao = new PizzaDAODatabase();
+            PreparedStatement ps = con.prepareStatement("SELECT * FROM commande_pizza, pizza WHERE commande_id = ? AND id = commande_id");
+            ps.setInt(1, id);
+            ResultSet rsPizza = ps.executeQuery();
+            ArrayList<Pizza> pizzasCommande = new ArrayList<>();
+
+            while (rsPizza.next()) {
+                pizzasCommande.add(pizzaDao.findById(rsPizza.getInt("pizza_id")));
+            }
+            commande.setCommandes(pizzasCommande);
+            return commande;
+        }
+        catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
     }
 
     @Override
     public boolean save(int id, String name, Date date, ArrayList<Pizza> commande) {
-        // TODO Auto-generated method stub
+        String query = "Insert into commande (id, nom, dates) VALUES ( ?, ? , ?) ; ";
+        String querycommande_pizza = " INSERT INTO commande_pizza (commande_id,pizza_id) VALUES ( ?, ?)";
+        try (Connection con = DriverManager.getConnection(url, nom, mdp)) {
+            try (PreparedStatement ps = con.prepareStatement(query)) {
+                ps.setInt(1, id);
+                ps.setString(2, name);
+                ps.setDate(3, date);
+                ps.executeUpdate();
+                try (PreparedStatement ps2 = con.prepareStatement(querycommande_pizza)) {
+                    for (Pizza pizza : commande) {
+                        ps2.setInt(1, id);
+                        ps2.setInt(2, pizza.getId());
+                        ps2.executeUpdate();
+                    }
+                    return true;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return false;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
         return false;
     }
 

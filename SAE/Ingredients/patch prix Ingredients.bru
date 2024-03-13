@@ -1,0 +1,18 @@
+meta {
+  name: patch prix Ingredients
+  type: http
+  seq: 1
+}
+
+patch {
+  url: http://localhost:8080/sae_rest_groupeh_milleville_martel/ingredients/1
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "prix" : "3",
+    "name" : "Tomates"
+  }
+}
