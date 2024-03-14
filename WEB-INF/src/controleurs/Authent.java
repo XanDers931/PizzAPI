@@ -42,7 +42,6 @@ public class Authent extends HttpServlet{
     public void doPost(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {
             String login= request.getParameter("login");
             String password = request.getParameter("mdp");
-            System.out.println(login+ " " + password);
             response.setContentType("text/html;charset=UTF-8");
             PrintWriter out = response.getWriter();
             out.println( "<head><title>Ton token</title>" );
