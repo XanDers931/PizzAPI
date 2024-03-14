@@ -16,7 +16,6 @@ import jakarta.servlet.http.HttpServletResponse;
 public class Authent extends HttpServlet{
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {
-
         // Récupération du login de la personne
             // Affichage du titre de la page
             response.setContentType("text/html");
@@ -25,6 +24,7 @@ public class Authent extends HttpServlet{
             out.println("<html>");
             out.println("<head>");
             out.println("<title>Authent</title>");
+            out.println("<link rel=\"stylesheet\" href=\"style.css\">");
             out.println("</head>");
             out.println("<body>");
 
