@@ -140,4 +140,18 @@ public class CommandeDAODatabase implements DAOCommande{
         return false;
     }
 
+    public boolean isAlreadyInTable(int id_ingredient){
+        try (Connection con = DriverManager.getConnection(url, nom, mdp)) {
+            PreparedStatement stmt;
+            stmt = con.prepareStatement("SELECT id FROM commande WHERE id=?");
+            stmt.setInt(1,id_ingredient);
+            ResultSet rs = stmt.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            
+        }
+        return false;
+    }
+
 }

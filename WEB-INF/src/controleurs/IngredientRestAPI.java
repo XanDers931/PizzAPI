@@ -50,9 +50,13 @@ public class IngredientRestAPI extends DoPatch {
                 out.print(jsonstring);
                 return;
             }
-            if(splits[2].equals("prix")){
+            else if(splits[2].equals("prix")){
                 String jsonstring = objectMapper.writeValueAsString(e.getPrix());
                 out.print(jsonstring);
+                return;
+            }
+            else{
+                res.sendError(HttpServletResponse.SC_BAD_REQUEST);
                 return;
             }
         }
@@ -91,6 +95,10 @@ public class IngredientRestAPI extends DoPatch {
                 buffer.append(line);
             }
             Ingredient ingredient = objectMapper.readValue(buffer.toString(), Ingredient.class);
+            if(dao.isAlreadyInTable(ingredient.getId())) {
+                res.sendError(HttpServletResponse.SC_NOT_FOUND);
+                return;
+            }
             dao.save(ingredient.getId(), ingredient.getName(), ingredient.getPrix());
             out.print(buffer.toString());
             return;
@@ -128,10 +136,16 @@ public class IngredientRestAPI extends DoPatch {
             return;
         }
         int id = Integer.parseInt(splits[1]);
+        if(dao.isAlreadyInTable(id)) {
+            res.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
         if (dao.delete(id)) {
             res.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            return;
         } else {
             res.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
         }
     }
 
@@ -172,12 +186,17 @@ public class IngredientRestAPI extends DoPatch {
         }
         int id = Integer.parseInt(splits[1]);
         String line;
+        if(dao.isAlreadyInTable(id)) {
+            res.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
         while ((line = reader.readLine()) != null) {
             buffer.append(line);
         }
 
         if (dao.findById(id).getId() == 0) {
             res.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
         }
 
         if(splits.length ==2){

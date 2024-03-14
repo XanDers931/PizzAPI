@@ -41,6 +41,10 @@ public class CommandeRestAPI extends HttpServlet {
             return;
         }
         int id = Integer.parseInt(splits[1]);
+        if(dao.isAlreadyInTable(id)) {
+            res.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
         Commande e = dao.findById(id);
         if (e == null) {
             res.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -114,6 +118,10 @@ public class CommandeRestAPI extends HttpServlet {
                 buffer.append(line);
             }
             int id_commande = Integer.parseInt(splits[1]);
+            if(dao.isAlreadyInTable(id_commande)) {
+                res.sendError(HttpServletResponse.SC_NOT_FOUND);
+                return;
+            }
             Pizza pizza = objectMapper.readValue(buffer.toString(), Pizza.class);
             dao.addPizza(id_commande, pizza.getId());
             out.print(buffer.toString());
@@ -151,10 +159,16 @@ public class CommandeRestAPI extends HttpServlet {
             return;
         }
         int id = Integer.parseInt(splits[1]);
+        if(dao.isAlreadyInTable(id)) {
+            res.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
         if (dao.delete(id)) {
             res.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            return;
         } else {
             res.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
         }
     }
 }
