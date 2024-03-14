@@ -50,6 +50,18 @@ public class PizzaRestAPI extends DoPatch {
                 String jsonstring = objectMapper.writeValueAsString(dao.getPrixFinal(id));
                 out.print(jsonstring);
                 return;
+            }if(splits[2].equals("name")){
+                String jsonstring = objectMapper.writeValueAsString(e.getNom());
+                out.print(jsonstring);
+                return;
+            }if(splits[2].equals("pate")){
+                String jsonstring = objectMapper.writeValueAsString(e.getPate());
+                out.print(jsonstring);
+                return;
+            }if(splits[2].equals("prixbase")){
+                String jsonstring = objectMapper.writeValueAsString(e.getPrixBase());
+                out.print(jsonstring);
+                return;
             }
         }
         out.print(objectMapper.writeValueAsString(e));
