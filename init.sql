@@ -42,6 +42,11 @@ CREATE TABLE commande_pizza (
   FOREIGN KEY (commande_id) REFERENCES commande(id) ON DELETE CASCADE
 );
 
+CREATE TABLE users(
+  login text NOT NULL,
+  pwd text NOT NULL
+);
+
 INSERT INTO ingredients (id, name, prix) VALUES
   (1, 'Tomates', 2),
   (2, 'Mozzarella', 3),
@@ -114,3 +119,7 @@ INSERT INTO commande_pizza (pizza_id, commande_id) VALUES (4, 4);  -- Pizza Regi
 --Commande 5
 INSERT INTO commande_pizza (pizza_id, commande_id) VALUES (3, 5);  -- Pizza Quatre Fromages
 INSERT INTO commande_pizza (pizza_id, commande_id) VALUES (2, 5);  -- Pizza Pepperoni
+
+--Ajout Utilisateurs accés API
+INSERT INTO users (login, pwd) VALUES ('Paul','pole');
+INSERT INTO users (login, pwd) VALUES ('Alex','goat');
