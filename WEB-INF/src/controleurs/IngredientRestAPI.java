@@ -99,7 +99,10 @@ public class IngredientRestAPI extends DoPatch {
                 res.sendError(HttpServletResponse.SC_NOT_FOUND);
                 return;
             }
-            dao.save(ingredient.getId(), ingredient.getName(), ingredient.getPrix());
+            if(dao.save(ingredient.getId(), ingredient.getName(), ingredient.getPrix())){
+                res.sendError(HttpServletResponse.SC_CONFLICT);
+                return;
+            }
             out.print(buffer.toString());
             return;
         }

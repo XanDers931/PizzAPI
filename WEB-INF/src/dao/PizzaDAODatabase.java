@@ -113,10 +113,36 @@ public class PizzaDAODatabase implements DAOPizza {
         return false;
     }
 
-    public boolean patch(int id, int new_price) {
+    public boolean patchPrix(int id, int new_price) {
         try (Connection con = DriverManager.getConnection(url, nom, mdp)) {
             PreparedStatement stmt = con.prepareStatement("update pizza set prixbase = ? where id = ?;");
             stmt.setInt(1, new_price);
+            stmt.setInt(2, id);
+            int rowsDeleted = stmt.executeUpdate();
+            return rowsDeleted==1;
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return false;
+    }
+
+    public boolean patchName(int id, String new_name) {
+        try (Connection con = DriverManager.getConnection(url, nom, mdp)) {
+            PreparedStatement stmt = con.prepareStatement("update pizza set nom = ? where id = ?;");
+            stmt.setString(1, new_name);
+            stmt.setInt(2, id);
+            int rowsDeleted = stmt.executeUpdate();
+            return rowsDeleted==1;
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return false;
+    }
+
+    public boolean patchPate(int id, String new_pate) {
+        try (Connection con = DriverManager.getConnection(url, nom, mdp)) {
+            PreparedStatement stmt = con.prepareStatement("update pizza set pate = ? where id = ?;");
+            stmt.setString(1, new_pate);
             stmt.setInt(2, id);
             int rowsDeleted = stmt.executeUpdate();
             return rowsDeleted==1;
@@ -132,7 +158,7 @@ public class PizzaDAODatabase implements DAOPizza {
             try (PreparedStatement ps = con.prepareStatement(query)) {
                 ps.setInt(1, id_pizza);
                 ps.setInt(2, id_ingredient);
-                ps.executeUpdate();
+                return ps.executeUpdate() == 1;
             } catch (Exception e) {
                 e.printStackTrace();
                 return false;

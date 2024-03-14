@@ -41,10 +41,6 @@ public class CommandeRestAPI extends HttpServlet {
             return;
         }
         int id = Integer.parseInt(splits[1]);
-        if(dao.isAlreadyInTable(id)) {
-            res.sendError(HttpServletResponse.SC_NOT_FOUND);
-            return;
-        }
         Commande e = dao.findById(id);
         if (e == null) {
             res.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -118,12 +114,11 @@ public class CommandeRestAPI extends HttpServlet {
                 buffer.append(line);
             }
             int id_commande = Integer.parseInt(splits[1]);
-            if(dao.isAlreadyInTable(id_commande)) {
-                res.sendError(HttpServletResponse.SC_NOT_FOUND);
+            Pizza pizza = objectMapper.readValue(buffer.toString(), Pizza.class);
+            if(dao.addPizza(id_commande, pizza.getId())){
+                res.sendError(HttpServletResponse.SC_CONFLICT);
                 return;
             }
-            Pizza pizza = objectMapper.readValue(buffer.toString(), Pizza.class);
-            dao.addPizza(id_commande, pizza.getId());
             out.print(buffer.toString());
         }
         return;
@@ -154,21 +149,24 @@ public class CommandeRestAPI extends HttpServlet {
             return;
         }
         String[] splits = info.split("/");
-        if (splits.length != 2) {
+        if (splits.length >3) {
             res.sendError(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
         int id = Integer.parseInt(splits[1]);
-        if(dao.isAlreadyInTable(id)) {
-            res.sendError(HttpServletResponse.SC_NOT_FOUND);
-            return;
-        }
+        System.out.println(id);
+        if (splits.length == 2){
         if (dao.delete(id)) {
             res.setStatus(HttpServletResponse.SC_NO_CONTENT);
             return;
         } else {
             res.sendError(HttpServletResponse.SC_NOT_FOUND);
             return;
+        }
+        }
+        else if (splits.length==3) {
+            int id_pizza = Integer.parseInt(splits[2]);
+            dao.deletePizza(id, id_pizza);
         }
     }
 }

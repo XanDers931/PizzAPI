@@ -154,4 +154,21 @@ public class CommandeDAODatabase implements DAOCommande{
         return false;
     }
 
+    public boolean deletePizza(int id_commande, int id_pizza) {
+        String query = "DELETE FROM commande_pizza WHERE commande_id=? AND pizza_id=? ; ";
+        try (Connection con = DriverManager.getConnection(url, nom, mdp)) {
+            try (PreparedStatement ps = con.prepareStatement(query)) {
+                ps.setInt(1, id_commande);
+                ps.setInt(2, id_pizza);
+                ps.executeUpdate();
+                return true;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return false;
+    }
 }

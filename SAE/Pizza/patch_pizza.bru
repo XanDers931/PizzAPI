@@ -1,11 +1,11 @@
 meta {
   name: patch_pizza
   type: http
-  seq: 3
+  seq: 11
 }
 
 patch {
-  url: http://localhost:8080/sae_rest_groupeh_milleville_martel/pizzas/1
+  url: http://localhost:8080/sae_rest_groupeh_milleville_martel/pizzas/2
   body: json
   auth: none
 }
@@ -16,6 +16,8 @@ headers {
 
 body:json {
   {
-    "prix" : "5"
+    "name" : "Regina",
+    "prix" : "5",
+    "pate" : "Epaisse"
   }
 }

@@ -99,7 +99,10 @@ public class PizzaRestAPI extends DoPatch {
                 buffer.append(line);
             }
             Pizza pizza = objectMapper.readValue(buffer.toString(), Pizza.class);
-            dao.save(pizza.getId(), pizza.getNom(),pizza.getPate(), pizza.getPrixBase(), pizza.getIngredients());
+            if(dao.save(pizza.getId(), pizza.getNom(),pizza.getPate(), pizza.getPrixBase(), pizza.getIngredients())){
+                res.sendError(HttpServletResponse.SC_CONFLICT);
+                return;
+            }
             out.print(buffer.toString());
             return;
         }
@@ -115,7 +118,10 @@ public class PizzaRestAPI extends DoPatch {
             }
             int id_pizza = Integer.parseInt(splits[1]);
             Ingredient ingredient = objectMapper.readValue(buffer.toString(), Ingredient.class);
-            dao.addIngredient(id_pizza, ingredient.getId());
+            if(dao.addIngredient(id_pizza, ingredient.getId())){
+                res.sendError(HttpServletResponse.SC_CONFLICT);
+                return;
+            }
             out.print(buffer.toString());
         }
         return;
@@ -213,10 +219,24 @@ public class PizzaRestAPI extends DoPatch {
         Map<String, String> jsonData = objectMapper.readValue(payload, Map.class);
 
         String prixString = jsonData.get("prix");
-
-        int prix = Integer.parseInt(prixString);
-
-        dao.patch(id, prix);
+        int cpt =0;
+        if(prixString!=null){
+            int prix = Integer.parseInt(prixString);
+            dao.patchPrix(id, prix);
+            cpt++;
+        }
+        if(jsonData.get("name")!=null){
+            dao.patchName(id, jsonData.get("name"));
+            cpt++;
+        }
+        if(jsonData.get("pate")!=null){
+            dao.patchPate(id, jsonData.get("pate"));
+            cpt++;
+        }
+        if(cpt==0){
+            res.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
 
         out.print(objectMapper.writeValueAsString(dao.findById(id)));
 
