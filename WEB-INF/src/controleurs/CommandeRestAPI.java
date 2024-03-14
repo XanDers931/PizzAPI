@@ -2,14 +2,15 @@ package controleurs;
 
 import java.io.BufferedReader;
 import java.io.PrintWriter;
+import java.util.Base64;
 import java.util.Collection;
 import java.sql.Date;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dao.CommandeDAODatabase;
+import dao.VerifierToken;
 import dto.Commande;
-import dto.Ingredient;
 import dto.Pizza;
 import io.jsonwebtoken.io.IOException;
 import jakarta.servlet.ServletException;
@@ -69,6 +70,22 @@ public class CommandeRestAPI extends HttpServlet {
 
     public void doPost(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException, java.io.IOException {
+                        String autho = req.getHeader("token");
+        if (autho==null || !autho.startsWith("Basic")) {
+            res.sendError(HttpServletResponse.SC_FORBIDDEN);
+            return;
+        }
+        // on décode le token
+        String token = autho.substring("Basic".length()).trim();
+        byte[] base64 = Base64.getDecoder().decode(token);
+        String[] lm = (new String(base64)).split(":");
+        String login = lm[0];
+        String pwd = lm[1];
+        if(!VerifierToken.token(login,pwd)){
+            res.sendError(HttpServletResponse.SC_FORBIDDEN);
+            return;
+        }
+        
         res.setContentType("application/json;charset=UTF-8");
         PrintWriter out = res.getWriter();
         ObjectMapper objectMapper = new ObjectMapper();
@@ -106,6 +123,22 @@ public class CommandeRestAPI extends HttpServlet {
 
     public void doDelete(HttpServletRequest req, HttpServletResponse res)
         throws ServletException, IOException, java.io.IOException {
+            String autho = req.getHeader("token");
+            if (autho==null || !autho.startsWith("Basic")) {
+                res.sendError(HttpServletResponse.SC_FORBIDDEN);
+                return;
+            }
+            // on décode le token
+            String token = autho.substring("Basic".length()).trim();
+            byte[] base64 = Base64.getDecoder().decode(token);
+            String[] lm = (new String(base64)).split(":");
+            String login = lm[0];
+            String pwd = lm[1];
+            if(!VerifierToken.token(login,pwd)){
+                res.sendError(HttpServletResponse.SC_FORBIDDEN);
+                return;
+            }
+            
         res.setContentType("application/json;charset=UTF-8");
         String info = req.getPathInfo();
         if (info == null || info.equals("/")) {
