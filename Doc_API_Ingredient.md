@@ -8,7 +8,7 @@
 | /ingredients/{id}/prix | GET | <-text/plain |  | le prix de l'ingrédient d'id {id} (L3) ou 404 |
 | /ingredients | POST | <-/->application/json | Ingrédient (L1) | Nouvel ingrédient  (L1) ou  409 si l'ingrédient existe déjà (même nom) |
 | /ingredients/{id} | DELETE |  |  | Delete d'un ingrédient ou 404 | 
-| /ingredients/{id} | PATCH | <-/->application/json | Ingrédient(L2 ou L3 ou L4) | Modification des détails d'un ingrédient (L1) ou 404 |
+| /ingredients/{id} | PATCH | <-/->application/json | Ingrédient (L4) | Modification des détails d'un ingrédient (L1) ou 404 |
 
 ## Corps de Requêtes
 
@@ -23,16 +23,12 @@
 
 ### L2
 ```json
-{
-  "name":"sauce",
-}
+"sauce"
 ```
 
 ### L3
 ```json
-{
-  "prix":12
-}
+12
 ```
 
 ### L4
@@ -51,7 +47,7 @@
 GET /ingredients
 ```
 
-Réponse de la requete du serveur
+#### Réponse de la requete du serveur
 
 ```json
 GET /ingredients
@@ -70,7 +66,7 @@ GET /ingredients
 ]
 ```
 
-Codes de status HTTP
+#### Codes de status HTTP
 
 | Status | Description |
 |--------|-------------|
@@ -82,7 +78,7 @@ Codes de status HTTP
 GET /ingredients/{id}
 ```
 
-Réponse de la requete du serveur
+#### Réponse de la requete du serveur
 
 ```json
 GET /ingredients/1
@@ -94,7 +90,7 @@ GET /ingredients/1
 }
 ```
 
-Codes de status HTTP
+#### Codes de status HTTP
 
 | Status | Description |
 |--------|-------------|
@@ -107,17 +103,15 @@ Codes de status HTTP
 GET /ingredients/{id}/name
 ```
 
-Réponse de la requete du serveur
+#### Réponse de la requete du serveur
 
 ```json
 GET /ingredients/1/name
 
-{
-    "name":"mozzarella",
-}
+"mozzarella"
 ```
 
-Codes de status HTTP
+#### Codes de status HTTP
 
 | Status | Description |
 |--------|-------------|
@@ -130,17 +124,15 @@ Codes de status HTTP
 GET /ingredients/{id}/prix
 ```
 
-Réponse de la requete du serveur
+#### Réponse de la requete du serveur
 
 ```json
 GET /ingredients/1/prix
 
-{
-    "prix": 3,
-}
+3
 ```
 
-Codes de status HTTP
+#### Codes de status HTTP
 
 | Status | Description |
 |--------|-------------|
@@ -153,7 +145,7 @@ Codes de status HTTP
 POST /ingredients
 ```
 
-Requête envoyée au serveur
+#### Requête envoyée au serveur
 
 ```json
 POST /ingredients
@@ -164,8 +156,14 @@ POST /ingredients
     "prix":3
 }
 ```
+ou 
+```json
+{
+    "id":1,
+}
+```
 
-Réponse de la requete du serveur
+#### Réponse de la requete du serveur
 
 ```json
 {
@@ -175,7 +173,7 @@ Réponse de la requete du serveur
 }
 ```
 
-Codes de status HTTP
+#### Codes de status HTTP
 
 | Status | Description |
 |--------|-------------|
@@ -188,13 +186,13 @@ Codes de status HTTP
 DELETE /ingredients/{id}
 ```
 
-Réponse de la requete du serveur
+#### Réponse de la requete du serveur
 
 ```json
 POST /ingredients/1
 ```
 
-Codes de status HTTP
+#### Codes de status HTTP
 
 | Status | Description |
 |--------|-------------|
@@ -207,7 +205,7 @@ Codes de status HTTP
 PATCH /ingredients/{id}
 ```
 
-Requête envoyée au serveur
+#### Requête envoyée au serveur
 
 ```json
 PATCH /ingredients/1
@@ -215,32 +213,32 @@ PATCH /ingredients/1
 {
     "name": "mozzarella",
 } 
-
+```
 ou
-
+```json
 {
     "prix": 3,
 } 
-
+```
 ou 
-
+```json
 {
     "name": "mozzarella",
     "prix": 3,
 } 
 ```
 
-Réponse de la requête du serveur
+#### Réponse de la requête du serveur
 
 ```json
 {
     "id":1,
-    "name":"mozzarella",
-    "prix":3
+    "prix":3,
+    "name":"mozzarella"
 }
 ```
 
-Codes de status HTTP
+#### Codes de status HTTP
 
 | Status | Description |
 |--------|-------------|
