@@ -24,7 +24,49 @@ public class Authent extends HttpServlet{
             out.println("<html>");
             out.println("<head>");
             out.println("<title>Authent</title>");
-            out.println("<link rel=\"stylesheet\" href=\"style.css\">");
+            out.println("<style>\n" + //
+                                "\n" + //
+                                "body {\n" + //
+                                "    font-family: Arial, sans-serif;\n" + //
+                                "    margin: 0;\n" + //
+                                "    padding: 0;\n" + //
+                                "    background-color: #f4f4f4;\n" + //
+                                "}\n" + //
+                                "\n" + //
+                                "form {\n" + //
+                                "    width: 300px;\n" + //
+                                "    margin: 50px auto;\n" + //
+                                "    background-color: #fff;\n" + //
+                                "    padding: 20px;\n" + //
+                                "    border-radius: 5px;\n" + //
+                                "    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);\n" + //
+                                "}\n" + //
+                                "\n" + //
+                                "input[type=\"text\"],\n" + //
+                                "input[type=\"password\"] {\n" + //
+                                "    width: 100%;\n" + //
+                                "    padding: 10px;\n" + //
+                                "    margin: 5px 0;\n" + //
+                                "    border: 1px solid #ccc;\n" + //
+                                "    border-radius: 3px;\n" + //
+                                "    box-sizing: border-box;\n" + //
+                                "}\n" + //
+                                "\n" + //
+                                "input[type=\"submit\"] {\n" + //
+                                "    width: 100%;\n" + //
+                                "    background-color: #007bff;\n" + //
+                                "    color: #fff;\n" + //
+                                "    border: none;\n" + //
+                                "    padding: 10px;\n" + //
+                                "    margin-top: 10px;\n" + //
+                                "    border-radius: 3px;\n" + //
+                                "    cursor: pointer;\n" + //
+                                "}\n" + //
+                                "\n" + //
+                                "input[type=\"submit\"]:hover {\n" + //
+                                "    background-color: #0056b3;\n" + //
+                                "}\n" + //
+                                "</style>");
             out.println("</head>");
             out.println("<body>");
 
